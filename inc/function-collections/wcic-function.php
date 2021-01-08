@@ -1,5 +1,6 @@
 <?php
-
+include( 'pakar-gejala.php' );
+include( 'pakar-kerusakan.php' );
 function WCIC(){
     return \App\lib\wcic_load_class::init();
 }
@@ -338,4 +339,76 @@ function wp_token_verifier(string $token){
 	if ( $wpcsrf->getTokenProvider()->validate((string)$token) === false) {
         throw new \Exception('Invalid CSRF-token.');
     }
+}
+
+function array_search_values( $m_needle, $a_haystack, $b_strict = false){
+    return array_intersect_key( $a_haystack, array_flip( array_keys( $a_haystack, $m_needle, $b_strict)));
+}
+
+function pakar_next(){
+	return isset( $_GET['command'] ) && 'accept' === $_GET['command'];
+}
+
+function pakar_dispatch(){
+	return isset( $_GET['command'] ) && 'dispatch' === $_GET['command'];
+}
+
+function pakar_reset(){
+	return isset( $_GET['command'] ) && 'reset' === $_GET['command'];
+}
+
+function pakar_destroy(){
+	return isset( $_GET['command'] ) && 'destroy' === $_GET['command'];
+}
+
+function pakar_filter_command_accepted($item_values){
+	if ($item_values === 'iya') {
+		return true;
+	}
+	return false;
+}
+
+function pakar_calculate_certainly_fact( $id_kerusakan ){
+	$basispengetahuan = \Models\RelasiKerusakan::where( 'id_kerusakan', $id_kerusakan )->get()->toArray();
+	$current_gejala = current($basispengetahuan);
+	$mb1 = $current_gejala['mb'];
+	$md1 = $current_gejala['md'];
+	unset( $current_gejala );
+	unset($basispengetahuan[0]);
+	for ( $i=1;  $i <= count( $basispengetahuan ) ;  $i++) {
+		$mbloop = $basispengetahuan[$i]['mb'];
+		$mdloop = $basispengetahuan[$i]['md'];
+		if ( isset( $procesed_mb ) && isset( $procesed_md ) ) {
+			$procesed_mb = floatval($procesed_mb) + floatval($mbloop) * ( 1 - floatval($procesed_mb) );
+			$procesed_md = floatval($procesed_md) + floatval($mdloop) * ( 1 - floatval($procesed_md) );
+			continue;
+		}
+		$procesed_mb = floatval($mb1) + floatval($mbloop) * ( 1 - floatval($mb1) );
+		$procesed_md = floatval($md1) + floatval($mdloop) * ( 1 - floatval($md1) );
+	}
+	$final_process = ( floatval($procesed_mb) - floatval($procesed_md) ) * 100;
+	if ( $final_process ) {
+		$final_process = number_format( $final_process, 3 );
+	}
+	return $final_process;
+}
+
+function pakar_reset_diagnosa_process(){
+	// end process diagnosa data
+	$sessions = array(
+		's.origin.gejala',
+		's.selected.kerusakan',
+		's.selected.gejala',
+		's.where.notin.kerusakan',
+		's.where.notin.gejala',
+		's.acc.gejala',
+		's.current.kerusakan',
+		's.status.gejala',
+		's.selector.gejala',
+		's.gejala.choices'
+	);
+
+	foreach ( $sessions as $key => $value ) {
+		\Delight\Cookie\Session::delete($value);
+	}
 }

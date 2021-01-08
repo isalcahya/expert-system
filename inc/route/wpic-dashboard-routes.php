@@ -7,6 +7,7 @@ use Pecee\SimpleRouter\SimpleRouter as Router;
  * @since 0.0.1
 */
 $staticHandle = function(){
+
 	/**
 	* Get current active route
 	* @var Routes
@@ -49,12 +50,20 @@ Router::group( ['prefix' => '/wp-admin', 'middleware' => \App\middleware\AdminDa
 	if ( ! is_admin() ) {
 		return;
 	}
-	$routes( wpic_get_menus_dashboard() );
+	$admin_dashboard = wpic_get_menus_dashboard();
+	if ( empty($admin_dashboard) || !is_array($admin_dashboard) ) {
+		redirect( WCIC()->get_path( '', true ) . 'login' );
+	}
+	$routes($admin_dashboard);
 });
 
 Router::group( ['prefix' => '/wp-user', 'middleware' => \App\middleware\UserDashboard::class], function () use ($routes){
 	if ( ! is_user_page() ) {
 		return;
 	}
-	$routes( wpic_get_menus_dashboard() );
+	$user_dashboard = wpic_get_menus_dashboard();
+	if ( empty($user_dashboard) || !is_array($admin_dashboard) ) {
+		redirect( WCIC()->get_path( '', true ) . 'login' );
+	}
+	$routes($user_dashboard);
 });

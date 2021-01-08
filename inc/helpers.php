@@ -43,6 +43,9 @@ function response(): Response
     return Router::response();
 }
 
+function wp_send_json( $message, $code = 200 ){
+    response()->httpCode($code)->json($message);
+}
 /**
  * @return \Pecee\Http\Request
  */

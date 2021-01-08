@@ -1,12 +1,59 @@
 import $ from 'jquery';
-import $w from 'wpic';
+import $_w from 'wpic';
+import Swal from 'swal';
 class test {
 	constructor(){
 		this.init();
 		this.from();
+		this.pakarTable();
+		this.pakarCRUD();
+	}
+	pakarCRUD(){
+		$(document).on( 'click', 'a.pakar-btn-remover', function(e){
+			e.preventDefault();
+			var selector = $(this).data('selector');
+			var data = {
+				'kerusakan' : {
+					'action' : 'pakar_kerusakan_remover',
+					'id' : $(this).data('kerusakan-id') ?? 0
+				},
+				'gejala' : {
+					'action' : 'pakar_gejala_remover',
+					'id' : $(this).data('gejala-id') ?? 0
+				}
+			};
+			var $args = data[selector] ?? null;
+			if ( !$args ) return;
+			Swal.fire({
+			  title: 'Are you sure delete this data',
+			  showCancelButton: true,
+			  confirmButtonText: 'Proses',
+			  showLoaderOnConfirm: true,
+			  preConfirm: () => {
+			    return $.post( $_w.admin_ajax_url, $.extend($args, { wp_csrf_token : $_w.csrf_token }), (d) => {
+					return d;
+				} );
+			  },
+			  allowOutsideClick: () => !Swal.isLoading()
+			}).then( (result) => {
+				var result = result.value;
+				if ( result.sukses ) {
+					Swal.fire({
+						position: 'top-end',
+						icon: 'success',
+						title: 'Your work has been saved',
+						showConfirmButton: false,
+						timer: 1500
+					})
+					location.reload();
+				}
+			})
+		});
+	}
+	pakarTable(){
+		$('#example').DataTable();
 	}
 	from(){
-		console.log($w)
 		$(document).on( 'change', '#customCheckRegister', function(){
 			alert($(this).val())
 		})

@@ -13,8 +13,8 @@ class DefHooks {
 		add_action( 'init', array( $this, 'register_scripts' ) );
 		if ( is_admin() || is_user_page() ) {
 			add_action( 'wpic_setup_dashboard', array( $this, 'smart_setup_dashboard' ), 9 );
+			add_action( 'admin_init', array( $this, 'add_menu_dashboard_page' ) );
 		}
-		add_action( 'admin_init', array( $this, 'add_menu_dashboard_page' ) );
 	}
 
 	public function add_menu_dashboard_page( ){
@@ -23,7 +23,7 @@ class DefHooks {
 			__( 'Dashboard', 'wpic' ),
 			'manage',
 			'dashboard',
-			array( $this, 'render_main_dashboard' ),
+			apply_filters( 'dashboard_content_callback', array( $this, 'render_main_dashboard' ) ),
 			'ni ni-shop'
 		);
 	}
@@ -41,6 +41,7 @@ class DefHooks {
  		wp_enqueue_style('fullcalendar');
  		wp_enqueue_style('sweatallert');
  		wp_enqueue_script('dashboard');
+
  		wp_enqueue_style('dashboard');
 
  		/**
@@ -52,6 +53,7 @@ class DefHooks {
 	public function register_scripts(){
 		//scripts
 		wp_register_script( 'cookie', $this->pathDist . '/assets/vendor/js-cookie/js.cookie.js', false, false, true );
+		wp_register_script( 'sweatallert', $this->pathDist . '/assets/vendor/sweetalert2/dist/sweetalert2.min.js', false, false, true );
  		wp_register_script( 'scrollbar', $this->pathDist . '/assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js', false, false, true );
  		wp_register_script( 'scrollock', $this->pathDist . '/assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js', false, false, true );
  		wp_register_script( 'chart', $this->pathDist . '/assets/vendor/chart.js/dist/Chart.min.js', false, false, true );

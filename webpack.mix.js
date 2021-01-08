@@ -4,7 +4,8 @@ mix.webpackConfig({
 	externals: {
 		"wpic": "WPIC",
 		"jquery": "jQuery",
-		"bootstrap" : "bootstrap"
+		"bootstrap" : "bootstrap",
+		"swal" : "Sweetalert2"
 	},
 	resolve: {
 		alias: {

@@ -1,4 +1,5 @@
 <?php
+use Delight\Cookie\Session;
 /**
  *
  */
@@ -18,51 +19,58 @@ class WpicFronts {
 		add_action( 'wcic-setup-register-page', array( $this, 'remove_front_dependency' ) );
 		add_action( 'wcic-render-landpage', array( $this, 'prepare_landpage' ) );
 		add_action( 'wcic_navbar_template', array( $this, 'navbar_default_template' ) );
-		add_action( 'front_post_handler', array( $this, 'front_post_callback' ), 10, 2 );
+		add_action( 'pakar_navbar_template', array( $this, 'pakar_navbar_template' ) );
+		add_action( 'front_post_handler', array( $this, 'front_auth_post_callback' ), 10, 2 );
  	}
 
- 	public function front_post_callback( $page, $postdata ){
+ 	public function pakar_navbar_template(){
+ 		view()->render( 'parts/pakar-navbar-header' );
+ 	}
+
+ 	public function front_auth_post_callback( $page, $postdata ){
+ 		if ( ( empty($page) && !is_string($page) ) || empty( $postdata ) ) {
+			return;
+		}
+		if ( ! ( $auth = get_wpauth() ) ) {
+			return;
+		}
  		try {
- 			if ( ( empty($page) && !is_string($page) ) || empty( $postdata ) ) {
- 				throw new \Exception("Error Processing Request", 1);
- 			}
- 			if ( ! ( $auth = get_wpauth() ) ) {
-				throw new \Exception("Error Processing Request", 1);
-			}
-			if ( $auth->check() ) {
-				if ( $auth->hasRole(\Delight\Auth\Role::ADMIN) ) {
-					redirect(redirect_by_role('admin'));
-				}
-				if ( $auth->hasRole(\Delight\Auth\Role::AUTHOR) ) {
-					redirect(redirect_by_role('author'));
-				}
-			}
- 			$page = explode( '.', $page );
- 			$page = isset($page[0]) ? $page[0] : 0;
  			switch ( $page ) {
  				case 'login':
  					if ( isset( $postdata['_login'] ) && $postdata['_login'] ) {
  						$auth->login($postdata['user_email'], $postdata['user_pass']);
- 						if ( $auth->hasRole(\Delight\Auth\Role::ADMIN) ) {
- 							redirect(redirect_by_role('admin'));
- 						}
- 						if ( $auth->hasRole(\Delight\Auth\Role::AUTHOR) ) {
- 							redirect(redirect_by_role('author'));
+ 						if ( $auth->check() ) {
+ 							if ( $auth->hasRole(\Delight\Auth\Role::ADMIN) ) {
+	 							redirect(redirect_by_role('admin'));
+	 						}
+	 						if ( $auth->hasRole(\Delight\Auth\Role::AUTHOR) ) {
+	 							redirect(redirect_by_role('author'));
+	 						}
  						}
 			 		}
  					break;
- 				case 'resgister':
+ 				case 'register':
  					if ( isset( $postdata['_register'] ) && $postdata['_register'] ) {
 						$userId = $auth->register($postdata['user_email'], $postdata['user_pass'], $postdata['user_username']);
 						# todo make email confirmation for registered user
 						if ( $userId ) {
+							// for this case , when user registered then set role for admin
+							$auth->admin()->addRoleForUserById( $userId, \Delight\Auth\Role::ADMIN );
 							$auth->login( $postdata['user_email'], $postdata['user_pass'] );
 							if ( $auth->check() ) {
-								redirect(WCIC()->get_path('', true).'wp-user/dashboard');
+								redirect(WCIC()->get_path('', true).'wp-user/');
 							}
 						}
 			 		}
  					break;
+ 				case 'diagnosa':
+					$diagnosa_post_data = $postdata['diagnosa'];
+					Session::set( 'diagnosa.name', $diagnosa_post_data['nama'] );
+					Session::set( 'diagnosa.no', $diagnosa_post_data['no'] );
+					if ( Session::has('diagnosa.name') && Session::has('diagnosa.no') ) {
+						redirect(url('diagnosa.start'));
+					}
+					break;
  				default:
  					throw new \Exception("Error Processing Request", 1);
  					break;
@@ -105,7 +113,7 @@ class WpicFronts {
 
 	public function register_script(){
 		// scripts
-		wp_register_script( 'wpicjs', $this->pathDist . '/js/test.js', array( 'jquery', 'bootstrap' ), false, true );
+		wp_register_script( 'wpicjs', $this->pathDist . '/js/test.js', array( 'jquery', 'bootstrap', 'sweatallert' ), false, true );
 		wp_register_script( 'headroom', $this->pathDist . '/assets/vendor/headroom.js/dist/headroom.min.js', array( 'jquery', 'bootstrap' ), false, true );
 		// styles
 		wp_register_style( 'front', $this->pathDist . '/css/front.css', false, false, 'all' );
@@ -123,7 +131,7 @@ class WpicFronts {
 		wp_enqueue_script('wpicjs');
 		wp_enqueue_script('headroom');
 		wp_enqueue_style('front');
-		wp_enqueue_style('fontawesome-free');
+		// wp_enqueue_style('fontawesome-free');
 		wp_enqueue_style('nucleo');
 		wp_enqueue_style('prism');
 	}
