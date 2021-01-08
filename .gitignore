@@ -1,6 +1,6 @@
 # DEPENDENCIES MANAGEMENT
 /vendor
-dist
+/dist
 .phpintel
 package-lock.json
 composer.lock
