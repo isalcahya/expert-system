@@ -1,5 +1,5 @@
 # DEPENDENCIES MANAGEMENT
-vendor
+/vendor
 dist
 .phpintel
 package-lock.json
