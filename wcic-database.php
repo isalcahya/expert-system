@@ -10,10 +10,10 @@ define( 'DBHOST', 'localhost' );
 define( 'DBNAME', 'pkl__fiani' );
 
 /** MySQL database username */
-define( 'DBUSER' , 'root' );
+define( 'DBUSER' , 'isalcahya' );
 
 /** MySQL database password */
-define( 'DBPASS', '' );
+define( 'DBPASS', 'magelang0101' );
 
 // define environment
 define( 'ENV', 'prod' );
