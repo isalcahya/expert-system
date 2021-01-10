@@ -203,7 +203,7 @@ class FrontController {
 	}
 
 	public function diagnosaFail(){
-		echo "gagal";
+		view()->render('pages/diagnosa-fail');
 	}
 
 	public function landpage(){
