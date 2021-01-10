@@ -1,7 +1,7 @@
 <?php
 use Pecee\SimpleRouter\SimpleRouter as Router;
 
-Router::get('/', 'FrontController@home');
+Router::get('/', 'FrontController@home')->name( 'home.page' );
 Router::form('/diagnosa', 'FrontController@diagnosa')->name('diagnosa.page');
 Router::get('/diagnosa/start', 'FrontController@startDiagnosa')->name('diagnosa.start');
 Router::get('/diagnosa/boom', 'FrontController@diagnosaBoom')->name('diagnosa.boom');

@@ -27,7 +27,7 @@
             	<div class="row mb-3">
                     <div class="col-sm-12 d-flex" style="justify-content: space-between;">
                         <a href="<?= url( 'diagnosa.start', null, [ 'command' => 'reset' ] ) ?>" class="btn btn-danger">Mulai ulang</a>
-                        <a href="<?= url( 'diagnosa.page', null, [ 'command' => 'destroy' ] ) ?>" class="btn btn-danger">Keluar</a>
+                        <a href="<?= url( 'home.page' ) ?>" class="btn btn-danger">Keluar</a>
                     </div>
                 </div>
                 <div class="card bg-neutral">
