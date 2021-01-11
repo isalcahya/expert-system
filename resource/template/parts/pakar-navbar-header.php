@@ -26,7 +26,7 @@
             </ul>
         </div>
         <div class="d-none d-lg-block d-lg-none">
-            <a href="<?php echo url( 'diagnosa.start' ) ?>" class="btn btn-md btn-docs btn-outline-white animate-up-2 mr-3"><i class="fas fa-th-large mr-2"></i> <?php _e( 'Diagnosa' ) ?></a>
+            <a href="<?php echo url( 'diagnosa.start' ) ?>" class="btn btn-md btn-docs btn-outline-white animate-up-2 mr-3"><i class="fas fa-th-large mr-2"></i> <?php _e( 'Mulai Diagnosa' ) ?></a>
             <a href="<?php echo url( 'login.page' ) ?>" class="btn btn-md btn-secondary animate-up-2"><i class="fas fa-paper-plane mr-2"></i> <?php _e( 'LOGIN ADMIN' ) ?></a>
         </div>
         <div class="d-flex d-lg-none align-items-center">
