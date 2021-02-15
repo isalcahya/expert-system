@@ -18,14 +18,14 @@ class DefHooks {
 	}
 
 	public function add_menu_dashboard_page( ){
-		add_dashboard_page(
-			'dashboard',
-			__( 'Dashboard', 'wpic' ),
-			'manage',
-			'dashboard',
-			apply_filters( 'dashboard_content_callback', array( $this, 'render_main_dashboard' ) ),
-			'ni ni-shop'
-		);
+		// add_dashboard_page(
+		// 	'dashboard',
+		// 	__( 'Dashboard', 'wpic' ),
+		// 	'manage',
+		// 	'dashboard',
+		// 	apply_filters( 'dashboard_content_callback', array( $this, 'render_main_dashboard' ) ),
+		// 	'ni ni-shop'
+		// );
 	}
 
 	public function render_main_dashboard(){

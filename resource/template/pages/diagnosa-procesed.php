@@ -1,8 +1,11 @@
 <?php view()->render( 'pakar-header-diagnosa' ); ?>
 <!-- Hero -->
-<section class="section-header pt-7 pb-9 pb-lg-12 bg-primary text-white">
+<section class="section-header pt-5 pb-9 pb-lg-12 bg-primary text-white">
     <div class="container">
         <div class="row justify-content-center mb-5">
+            <div class="col-sm-10 text-center">
+                <p><?php _e( 'Pilihlah jawaban ya atau tidak pada button di bawah ini, yang di alami mobil anda' ) ?></p>
+            </div>
             <div class="col-sm-10 text-center">
                 <div class="row mb-3">
                     <div class="col-sm-12 d-flex" style="justify-content: space-between;">
